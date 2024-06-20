@@ -1,0 +1,20 @@
+@BuberDinner.Api_HostAddress = http://localhost:5151
+
+
+GET {{BuberDinner.Api_HostAddress}}/auth/Test
+Accept: application/json
+
+###
+
+POST {{BuberDinner.Api_HostAddress}}/auth/Register
+Content-Type: application/json
+
+{
+  "firstName": "Himanshu",
+  "lastName": "Saini",
+  "email": "himanshusaini0345@outlook.com",
+  "password": "him123"
+}
+
+
+
