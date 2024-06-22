@@ -8,7 +8,6 @@ namespace BuberDinner.Api.Filters1
     {
         public override void OnException(ExceptionContext context)
         {
-            //base.OnException(context);
 
             var exception = context.Exception;
             var problemDetails = new ProblemDetails()

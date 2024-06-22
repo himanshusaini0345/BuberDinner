@@ -11,7 +11,6 @@ using RegisterRequest = BuberDinner.Contracts.Authentication.RegisterRequest;
 namespace BuberDinner.Api.Controllers
 {
     [Route("auth")]
-    //[ErrorHandlingFilter]
     public class AuthenticationController : Controller
     {
         private readonly IAuthenticationService _authenticationService;
