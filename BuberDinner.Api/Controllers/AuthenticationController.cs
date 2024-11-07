@@ -1,64 +1,65 @@
-﻿using BuberDinner.Api.Filters1;
-using BuberDinner.Application.Services.Authentication;
+﻿using Microsoft.AspNetCore.Mvc;
 using BuberDinner.Contracts.Authentication;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging.Abstractions;
+using BuberDinner.Application.Services.Authentication;
 using LoginRequest = BuberDinner.Contracts.Authentication.LoginRequest;
 using RegisterRequest = BuberDinner.Contracts.Authentication.RegisterRequest;
 
-namespace BuberDinner.Api.Controllers
+namespace BuberDinner.Api.Controllers;
+
+[Route("auth")]
+[ApiController]
+public class AuthenticationController : ControllerBase
 {
-    [Route("auth")]
-    public class AuthenticationController : Controller
+    private readonly IAuthenticationService _authenticationService;
+
+    public AuthenticationController(IAuthenticationService authenticationService)
     {
-        private readonly IAuthenticationService _authenticationService;
+        _authenticationService = authenticationService;
+    }
 
-        public AuthenticationController(IAuthenticationService authenticationService)
-        {
-            _authenticationService = authenticationService;
-        }
+    [HttpPost("register")]
+    public IActionResult Register( [FromBody]RegisterRequest request)
+    {
+        var authResult = _authenticationService.Register(
+            request.FirstName,
+            request.LastName,
+            request.Email,
+            request.Password);
 
-        [HttpPost("Register")]
-        public IActionResult Register( [FromBody]RegisterRequest request)
-        {
-            var authResult = _authenticationService.Register(
-                request.FirstName,
-                request.LastName,
-                request.Email,
-                request.Password);
+        var response = ToAuthenticationResult(authResult);
 
-            var response = new AuthenticationResponse(
-                authResult.User.Id,
-                authResult.User.FirstName,
-                authResult.User.LastName,
-                authResult.User.Email,
-                authResult.Token);
+        return Ok(response);
+    }
 
-            return Ok(response);
-        }
-        [HttpPost("Login")]
-        public IActionResult Login( [FromBody]LoginRequest request)
-        {
-            var authResult = _authenticationService.Login(
-                request.Email,
-                request.Password);
+    private static AuthenticationResponse ToAuthenticationResult(AuthenticationResult authResult)
+    {
+        return new AuthenticationResponse(
+                    authResult.User.Id,
+                    authResult.User.FirstName,
+                    authResult.User.LastName,
+                    authResult.User.Email,
+                    authResult.Token);
+    }
 
-            var response = new AuthenticationResponse(
-                authResult.User.Id,
-                authResult.User.FirstName,
-                authResult.User.LastName,
-                authResult.User.Email,
-                authResult.Token);
+    [HttpPost("login")]
+    public IActionResult Login( [FromBody]LoginRequest request)
+    {
+        var authResult = _authenticationService.Login(
+            request.Email,
+            request.Password);
 
-            return Ok(response);
-        }
-        [HttpGet("Test")]
-        public IActionResult Test()
-        {
-            return Ok("Test successful");
-        }
+        var response = ToAuthenticationResponse(authResult);
 
+        return Ok(response);
+    }
+
+    private static AuthenticationResponse ToAuthenticationResponse(AuthenticationResult authResult)
+    {
+        return new AuthenticationResponse(
+                    authResult.User.Id,
+                    authResult.User.FirstName,
+                    authResult.User.LastName,
+                    authResult.User.Email,
+                    authResult.Token);
     }
 }
