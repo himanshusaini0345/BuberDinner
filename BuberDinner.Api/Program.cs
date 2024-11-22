@@ -25,7 +25,12 @@ var app = builder.Build();
 {
     // Enable Swagger
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+        options.RoutePrefix = ""; // Make Swagger UI the default root path
+    });
+
 
     app.UseExceptionHandler("/error");
     app.UseHttpsRedirection();
