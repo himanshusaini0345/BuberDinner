@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
             Version = "v1",
             Description = "API documentation for the BuberDinner application"
         });
+        options.DocInclusionPredicate((_,api) => !(api.RelativePath?.Equals("error",StringComparison.OrdinalIgnoreCase) ?? false));
     });
 
     builder.Services.AddApplication()
